@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Pases</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f4f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.07);
+    }
+
+    .header { margin-bottom: 2rem; }
+
+    .header p {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .campo { margin-bottom: 1.4rem; }
+
+    .campo label {
+      display: block;
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .campo-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-step {
+      width: 44px;
+      height: 48px;
+      border: none;
+      background: #f5f4f0;
+      border-radius: 12px;
+      font-size: 22px;
+      color: #444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+      line-height: 1;
+    }
+
+    .btn-step:hover { background: #e8e7e3; }
+    .btn-step:active { transform: scale(0.94); }
+
+    .num-input {
+      flex: 1;
+      height: 48px;
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-align: center;
+      border: 1.5px solid #efefef;
+      border-radius: 12px;
+      background: #fff;
+      padding: 0 8px;
+      min-width: 0;
+      transition: border-color 0.15s;
+      -moz-appearance: textfield;
+    }
+
+    .num-input::-webkit-outer-spin-button,
+    .num-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .num-input:focus {
+      outline: none;
+      border-color: #bbb;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #efefef;
+      margin: 1.8rem 0;
+    }
+
+    .total-card {
+      background: #1a1a1a;
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+
+    .total-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    .total-valor {
+      font-size: 42px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .total-detalle {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 440px) {
+      .card { padding: 2rem 1.25rem; }
+      .total-valor { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="header">
+      <p>Cotización</p>
+      <h1>Calculadora de pases</h1>
+    </div>
+
+    <div class="campo">
+      <label>Cantidad de pantallas</label>
+      <div class="campo-row">
+        <button class="btn-step" onclick="cambiar('pantallas',-1)" aria-label="Menos">−</button>
+        <input class="num-input" type="number" id="val-pantallas" value="1" min="1" oninput="calcular()" onblur="validar('pantallas')">
+        <button class="btn-step" onclick="cambiar('pantallas',1)" aria-label="Más">+</button>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Pases por día por pantalla</label>
+      <div class="campo-row">
+        <button class="btn-step" onclick="cambiar('pases',-1)" aria-label="Menos">−</button>
+        <input class="num-input" type="number" id="val-pases" value="1" min="1" oninput="calcular()" onblur="validar('pases')">
+        <button class="btn-step" onclick="cambiar('pases',1)" aria-label="Más">+</button>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Días contratados</label>
+      <div class="campo-row">
+        <button class="btn-step" onclick="cambiar('dias',-1)" aria-label="Menos">−</button>
+        <input class="num-input" type="number" id="val-dias" value="1" min="1" oninput="calcular()" onblur="validar('dias')">
+        <button class="btn-step" onclick="cambiar('dias',1)" aria-label="Más">+</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="total-card">
+      <div class="total-label">Total a cobrar</div>
+      <div class="total-valor" id="res-total">$ 0</div>
+      <div class="total-detalle" id="res-detalle">Cargando...</div>
+    </div>
+  </div>
+
+  <script>
+    const PRECIO = 37; // <--- Cambiá este número por el valor unitario que definas
+
+    function get(campo) {
+      const v = parseInt(document.getElementById('val-' + campo).value);
+      return (isNaN(v) || v < 1) ? 1 : v;
+    }
+
+    function cambiar(campo, delta) {
+      const input = document.getElementById('val-' + campo);
+      input.value = Math.max(1, get(campo) + delta);
+      calcular();
+    }
+
+    function validar(campo) {
+      const input = document.getElementById('val-' + campo);
+      if (!input.value || parseInt(input.value) < 1) input.value = 1;
+      calcular();
+    }
+
+    function calcular() {
+      const pantallas = get('pantallas');
+      const pases = get('pases');
+      const dias = get('dias');
+      
+      const total = PRECIO * pantallas * pases * dias;
+      
+      const fmt = new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        currencyDisplay: 'narrowSymbol',
+        maximumFractionDigits: 2
+      });
+      
+      document.getElementById('res-total').textContent = fmt.format(total);
+      
+      const p = pantallas === 1 ? '1 pantalla' : pantallas + ' pantallas';
+      const pa = pases === 1 ? '1 pase/día' : pases + ' pases/día';
+      const d = dias === 1 ? '1 día' : dias + ' días';
+      
+      document.getElementById('res-detalle').textContent = fmt.format(PRECIO) + ' × ' + p + ' × ' + pa + ' × ' + d;
+    }
+
+    calcular();
+  </script>
+
+</body>
+</html>
