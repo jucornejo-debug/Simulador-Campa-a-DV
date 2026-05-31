@@ -171,17 +171,118 @@
     <div class="campo">
       <label>Cantidad de pantallas (Disponibles: 14)</label>
       <div class="campo-row">
-        <button class="btn-step" onclick="cambiar('pantallas',-1)">−</button>
+        <button class="btn-step" type="button" onclick="cambiar('pantallas', -1)">-</button>
         <input class="num-input" type="number" id="val-pantallas" value="7" min="1" max="14" oninput="calcular()" onblur="validar('pantallas')">
-        <button class="btn-step" onclick="cambiar('pantallas',1)">+</button>
+        <button class="btn-step" type="button" onclick="cambiar('pantallas', 1)">+</button>
       </div>
     </div>
 
     <div class="campo">
       <label>Pases por día por pantalla</label>
       <div class="campo-row">
-        <button class="btn-step" onclick="cambiar('pases',-50)">−</button>
+        <button class="btn-step" type="button" onclick="cambiar('pases', -50)">-</button>
         <input class="num-input" type="number" id="val-pases" value="200" min="50" step="50" oninput="calcular()" onblur="validar('pases')">
-        <button class="btn-step" onclick="cambiar('pases',50)">+</button>
+        <button class="btn-step" type="button" onclick="cambiar('pases', 50)">+</button>
       </div>
     </div>
+
+    <div class="campo">
+      <label>Días de pauta contratados</label>
+      <div class="campo-row">
+        <button class="btn-step" type="button" onclick="cambiar('dias', -1)">-</button>
+        <input class="num-input" type="number" id="val-dias" value="1" min="1" oninput="calcular()" onblur="validar('dias')">
+        <button class="btn-step" type="button" onclick="cambiar('dias', 1)">+</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="total-card">
+      <div class="total-label">Inversión estimada</div>
+      <div class="total-valor" id="res-total">$ 0</div>
+      <div class="total-detalle" id="res-detalle">Cargando estimación...</div>
+      <button class="btn-cta" type="button" onclick="enviarWhatsApp()">Reservar estas pantallas</button>
+    </div>
+  </div>
+
+  <script>
+    var PRECIO_BASE = 37;
+
+    function get(campo) {
+      var input = document.getElementById('val-' + campo);
+      if(!input) return 1;
+      var v = parseInt(input.value, 10);
+      var min = parseInt(input.getAttribute('min'), 10) || 1;
+      return (isNaN(v) || v < min) ? min : v;
+    }
+
+    function cambiar(campo, delta) {
+      var input = document.getElementById('val-' + campo);
+      if(!input) return;
+      var max = parseInt(input.getAttribute('max'), 10);
+      var nuevoValor = get(campo) + delta;
+      if (max && nuevoValor > max) nuevoValor = max;
+      var min = parseInt(input.getAttribute('min'), 10) || 1;
+      if (nuevoValor < min) nuevoValor = min;
+      input.value = nuevoValor;
+      calcular();
+    }
+
+    function validar(campo) {
+      var input = document.getElementById('val-' + campo);
+      if(!input) return;
+      var min = parseInt(input.getAttribute('min'), 10) || 1;
+      var max = parseInt(input.getAttribute('max'), 10);
+      var v = parseInt(input.value, 10);
+      if (isNaN(v) || v < min) v = min;
+      if (max && v > max) v = max;
+      input.value = v;
+      calcular();
+    }
+
+    function calcular() {
+      var pantallas = get('pantallas');
+      var pases = get('pases');
+      var dias = get('dias');
+      var total = PRECIO_BASE * pantallas * pases * dias;
+      
+      var fmt = new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        currencyDisplay: 'narrowSymbol',
+        maximumFractionDigits: 2
+      });
+      
+      var elTotal = document.getElementById('res-total');
+      var elDetalle = document.getElementById('res-detalle');
+      
+      if(elTotal) elTotal.textContent = fmt.format(total);
+      
+      var txtPantallas = pantallas === 1 ? '1 pantalla' : pantallas + ' pantallas';
+      var txtPases = pases === 1 ? '1 pase diario' : pases + ' pases diarios';
+      var txtDias = dias === 1 ? '1 día de cobertura' : dias + ' días de cobertura';
+      
+      if(elDetalle) elDetalle.textContent = 'Incluye: ' + txtPantallas + ' en simultáneo, ' + txtPases + ' por pantalla durante ' + txtDias + '.';
+    }
+
+    function enviarWhatsApp() {
+      var pantallas = get('pantallas');
+      var pases = get('pases');
+      var dias = get('dias');
+      var elTotal = document.getElementById('res-total');
+      var totalText = elTotal ? elTotal.textContent : '$ 0';
+      
+      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + pantallas + ' pantallas, ' + pases + ' pases diarios por ' + dias + ' días (Presupuesto estimado: ' + totalText + ').';
+      var telefono = "5493876022170"; // Acuérdate de cambiarlo por tu celu real sin el 0 ni el 15.
+      
+      window.open('https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
+    }
+
+    // Espera a que cargue toda la web antes de calcular
+    window.onload = function() {
+      calcular();
+    };
+  </script>
+
+</body>
+</html>
