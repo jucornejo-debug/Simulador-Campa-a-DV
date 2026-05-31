@@ -107,13 +107,13 @@
     .total-card {
       background: #1a1a1a;
       border-radius: 14px;
-      padding: 1.8rem 1.5rem; /* Más aire vertical */
+      padding: 1.8rem 1.5rem;
     }
 
     .total-label {
-      font-size: 10px; /* Un punto más chica */
+      font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.15em; /* Más espaciado corporativo */
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: #888;
       margin-bottom: 8px;
@@ -130,7 +130,7 @@
 
     .total-detalle {
       font-size: 12px;
-      color: #888; /* Un toque más claro para lectura con poco brillo */
+      color: #888;
       line-height: 1.5;
       margin-bottom: 1.5rem;
     }
@@ -142,4 +142,46 @@
       color: #1a1a1a;
       border: none;
       border-radius: 10px;
-      padding
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-cta:hover { background: #eee; }
+    .btn-cta:active { transform: scale(0.98); }
+
+    @media (max-width: 440px) {
+      .card { padding: 2rem 1.25rem; }
+      .total-valor { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="header">
+      <p>Simulador Web</p>
+      <h1>Presupuestá tu pauta</h1>
+    </div>
+
+    <div class="campo">
+      <label>Cantidad de pantallas (Disponibles: 14)</label>
+      <div class="campo-row">
+        <button class="btn-step" onclick="cambiar('pantallas',-1)">−</button>
+        <input class="num-input" type="number" id="val-pantallas" value="7" min="1" max="14" oninput="calcular()" onblur="validar('pantallas')">
+        <button class="btn-step" onclick="cambiar('pantallas',1)">+</button>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Pases por día por pantalla</label>
+      <div class="campo-row">
+        <button class="btn-step" onclick="cambiar('pases',-50)">−</button>
+        <input class="num-input" type="number" id="val-pases" value="200" min="50" step="50" oninput="calcular()" onblur="validar('pases')">
+        <button class="btn-step" onclick="cambiar('pases',50)">+</button>
+      </div>
+    </div>
