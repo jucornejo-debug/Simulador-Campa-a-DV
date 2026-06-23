@@ -295,8 +295,6 @@
   </div>
 
   <script>
-    var PRECIO_BASE = 74;
-
     function get(campo) {
       var input = document.getElementById('val-' + campo);
       if(!input) return 1;
@@ -350,8 +348,22 @@
         btnWhatsapp.textContent = 'Reservar estas ubicaciones';
       }
 
+      // LÓGICA DE PRECIOS ESCALONADOS
+      var precioBase = 74; // Precio óptimo (25 días o más)
+      var precioActual = precioBase;
+
+      if (dias >= 1 && dias <= 6) {
+        precioActual = precioBase * 1.15; // 15% más
+      } else if (dias >= 7 && dias <= 14) {
+        precioActual = precioBase * 1.10; // 10% más
+      } else if (dias >= 15 && dias <= 24) {
+        precioActual = precioBase * 1.05; // 5% más
+      } else if (dias >= 25) {
+        precioActual = precioBase; // Sin recargo
+      }
+
       var pasesTotalesDia = totemsEquivalentes * pases;
-      var total = PRECIO_BASE * pasesTotalesDia * dias;
+      var total = precioActual * pasesTotalesDia * dias;
       
       var fmt = new Intl.NumberFormat('es-AR', {
         style: 'currency',
