@@ -255,6 +255,11 @@
         </label>
 
         <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="Universidad Católica de Salta" onchange="calcular()">
+          <span>Universidad Católica de Salta</span>
+        </label>
+
+        <label class="ubi-chip">
           <input type="checkbox" value="0.5" data-name="Galería Margalef (1 Pantalla)" onchange="calcular()">
           <span>Galería Margalef <small>1 Pantalla</small></span>
         </label>
@@ -324,7 +329,6 @@
       var pases = get('pases');
       var dias = get('dias');
       
-      // Obtener todas las ubicaciones tildadas
       var checkboxes = document.querySelectorAll('.ubi-chip input:checked');
       var btnWhatsapp = document.getElementById('btn-whatsapp');
       
@@ -335,7 +339,6 @@
         totemsEquivalentes += parseFloat(cb.value);
       });
 
-      // Si no hay nada seleccionado, desactivar el botón y poner todo en cero
       if (locacionesCount === 0) {
         document.getElementById('res-total').textContent = '$ 0 + IVA';
         document.getElementById('res-detalle').textContent = 'Por favor, seleccioná al menos una ubicación.';
@@ -347,8 +350,6 @@
         btnWhatsapp.textContent = 'Reservar estas ubicaciones';
       }
 
-      // Cálculo: Multiplicamos los tótems equivalentes por los pases y los días.
-      // Si eligen Margalef (0.5) y 200 pases, aporta 100 pases al total del día.
       var pasesTotalesDia = totemsEquivalentes * pases;
       var total = PRECIO_BASE * pasesTotalesDia * dias;
       
@@ -383,7 +384,7 @@
       
       var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + pases + ' pases diarios (base tótem) por ' + dias + ' días.\n\n*Ubicaciones seleccionadas:*\n' + listaTexto + '\n\n*(Presupuesto estimado: ' + totalText + ')*';
       
-      var telefono = "5493876022170"; // Acuérdate de cambiarlo por tu celu real sin el 0 ni el 15.
+      var telefono = "5493876022170";
       window.open('https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
     }
 
