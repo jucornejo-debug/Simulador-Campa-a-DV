@@ -22,7 +22,7 @@
       border-radius: 20px;
       padding: 2.5rem 2rem;
       width: 100%;
-      max-width: 400px;
+      max-width: 440px;
       box-shadow: 0 2px 24px rgba(0,0,0,0.07);
     }
 
@@ -43,13 +43,14 @@
       color: #1a1a1a;
     }
 
-    .campo { margin-bottom: 1.4rem; }
+    .campo { margin-bottom: 1.6rem; }
 
-    .campo label {
+    .campo label.titulo-campo {
       display: block;
       font-size: 13px;
       color: #777;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
 
     .campo-row {
@@ -58,6 +59,57 @@
       gap: 6px;
     }
 
+    /* Estilos para las ubicaciones */
+    .ubicaciones-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ubi-chip {
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ubi-chip input {
+      display: none;
+    }
+
+    .ubi-chip span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #efefef;
+      background: #fdfdfd;
+      font-size: 14px;
+      font-weight: 500;
+      color: #444;
+      transition: all 0.2s ease;
+    }
+
+    .ubi-chip span small {
+      font-size: 11px;
+      color: #999;
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .ubi-chip input:checked + span {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    .ubi-chip input:checked + span small {
+      background: #333;
+      color: #ddd;
+    }
+
+    /* Estilos para los contadores */
     .btn-step {
       width: 44px;
       height: 48px;
@@ -153,6 +205,7 @@
 
     .btn-cta:hover { background: #eee; }
     .btn-cta:active { transform: scale(0.98); }
+    .btn-cta:disabled { background: #555; color: #888; cursor: not-allowed; }
 
     @media (max-width: 440px) {
       .card { padding: 2rem 1.25rem; }
@@ -169,16 +222,47 @@
     </div>
 
     <div class="campo">
-      <label>Cantidad de tótems (Disponibles: 8)</label>
-      <div class="campo-row">
-        <button class="btn-step" type="button" onclick="cambiar('totems', -1)">-</button>
-        <input class="num-input" type="number" id="val-totems" value="4" min="1" max="8" oninput="calcular()" onblur="validar('totems')">
-        <button class="btn-step" type="button" onclick="cambiar('totems', 1)">+</button>
+      <label class="titulo-campo">Seleccioná los puntos de exhibición</label>
+      <div class="ubicaciones-grid" id="contenedor-ubicaciones">
+        <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="El Punto San Lorenzo Chico - 1" onchange="calcular()" checked>
+          <span>El Punto San Lorenzo Chico - 1</span>
+        </label>
+        
+        <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="El Punto San Lorenzo Chico - 2" onchange="calcular()">
+          <span>El Punto San Lorenzo Chico - 2</span>
+        </label>
+        
+        <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="Galería La Continental" onchange="calcular()" checked>
+          <span>Galería La Continental</span>
+        </label>
+        
+        <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="Galería El Palacio - 1" onchange="calcular()">
+          <span>Galería El Palacio - 1</span>
+        </label>
+        
+        <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="Galería El Palacio - 2" onchange="calcular()">
+          <span>Galería El Palacio - 2</span>
+        </label>
+        
+        <label class="ubi-chip">
+          <input type="checkbox" value="1" data-name="Galería Buenos Aires" onchange="calcular()">
+          <span>Galería Buenos Aires</span>
+        </label>
+
+        <label class="ubi-chip">
+          <input type="checkbox" value="0.5" data-name="Galería Margalef (1 Pantalla)" onchange="calcular()">
+          <span>Galería Margalef <small>1 Pantalla</small></span>
+        </label>
       </div>
     </div>
 
     <div class="campo">
-      <label>Pases por día por tótem (15 seg. c/u)</label>
+      <label class="titulo-campo">Pases por día (15 seg. c/u)</label>
       <div class="campo-row">
         <button class="btn-step" type="button" onclick="cambiar('pases', -50)">-</button>
         <input class="num-input" type="number" id="val-pases" value="200" min="50" step="50" oninput="calcular()" onblur="validar('pases')">
@@ -187,7 +271,7 @@
     </div>
 
     <div class="campo">
-      <label>Días de pauta contratados</label>
+      <label class="titulo-campo">Días de pauta contratados</label>
       <div class="campo-row">
         <button class="btn-step" type="button" onclick="cambiar('dias', -1)">-</button>
         <input class="num-input" type="number" id="val-dias" value="1" min="1" oninput="calcular()" onblur="validar('dias')">
@@ -201,12 +285,12 @@
       <div class="total-label">Inversión estimada</div>
       <div class="total-valor" id="res-total">$ 0</div>
       <div class="total-detalle" id="res-detalle">Cargando estimación...</div>
-      <button class="btn-cta" type="button" onclick="enviarWhatsApp()">Reservar estos tótems</button>
+      <button class="btn-cta" id="btn-whatsapp" type="button" onclick="enviarWhatsApp()">Reservar estas ubicaciones</button>
     </div>
   </div>
 
   <script>
-    var PRECIO_BASE = 37;
+    var PRECIO_BASE = 74;
 
     function get(campo) {
       var input = document.getElementById('val-' + campo);
@@ -219,9 +303,7 @@
     function cambiar(campo, delta) {
       var input = document.getElementById('val-' + campo);
       if(!input) return;
-      var max = parseInt(input.getAttribute('max'), 10);
       var nuevoValor = get(campo) + delta;
-      if (max && nuevoValor > max) nuevoValor = max;
       var min = parseInt(input.getAttribute('min'), 10) || 1;
       if (nuevoValor < min) nuevoValor = min;
       input.value = nuevoValor;
@@ -232,19 +314,43 @@
       var input = document.getElementById('val-' + campo);
       if(!input) return;
       var min = parseInt(input.getAttribute('min'), 10) || 1;
-      var max = parseInt(input.getAttribute('max'), 10);
       var v = parseInt(input.value, 10);
       if (isNaN(v) || v < min) v = min;
-      if (max && v > max) v = max;
       input.value = v;
       calcular();
     }
 
     function calcular() {
-      var totems = get('totems');
       var pases = get('pases');
       var dias = get('dias');
-      var total = PRECIO_BASE * totems * pases * dias;
+      
+      // Obtener todas las ubicaciones tildadas
+      var checkboxes = document.querySelectorAll('.ubi-chip input:checked');
+      var btnWhatsapp = document.getElementById('btn-whatsapp');
+      
+      var totemsEquivalentes = 0;
+      var locacionesCount = checkboxes.length;
+
+      checkboxes.forEach(function(cb) {
+        totemsEquivalentes += parseFloat(cb.value);
+      });
+
+      // Si no hay nada seleccionado, desactivar el botón y poner todo en cero
+      if (locacionesCount === 0) {
+        document.getElementById('res-total').textContent = '$ 0 + IVA';
+        document.getElementById('res-detalle').textContent = 'Por favor, seleccioná al menos una ubicación.';
+        btnWhatsapp.disabled = true;
+        btnWhatsapp.textContent = 'Seleccioná una ubicación';
+        return;
+      } else {
+        btnWhatsapp.disabled = false;
+        btnWhatsapp.textContent = 'Reservar estas ubicaciones';
+      }
+
+      // Cálculo: Multiplicamos los tótems equivalentes por los pases y los días.
+      // Si eligen Margalef (0.5) y 200 pases, aporta 100 pases al total del día.
+      var pasesTotalesDia = totemsEquivalentes * pases;
+      var total = PRECIO_BASE * pasesTotalesDia * dias;
       
       var fmt = new Intl.NumberFormat('es-AR', {
         style: 'currency',
@@ -253,35 +359,34 @@
         maximumFractionDigits: 2
       });
       
-      var elTotal = document.getElementById('res-total');
-      var elDetalle = document.getElementById('res-detalle');
+      document.getElementById('res-total').textContent = fmt.format(total) + ' + IVA';
       
-      // Agregado el texto "+ IVA" al final del formato de moneda
-      if(elTotal) elTotal.textContent = fmt.format(total) + ' + IVA';
+      var txtPuntos = locacionesCount === 1 ? '1 punto de exhibición' : locacionesCount + ' puntos de exhibición';
+      var txtDias = dias === 1 ? '1 día' : dias + ' días';
       
-      var txtTotems = totems === 1 ? '1 tótem' : totems + ' tótems';
-      var txtPases = pases === 1 ? '1 pase diario' : pases + ' pases diarios';
-      var txtDias = dias === 1 ? '1 día de cobertura' : dias + ' días de cobertura';
-      
-      // Detalle actualizado con "de 15 segundos"
-      if(elDetalle) elDetalle.textContent = 'Incluye: ' + txtTotems + ' en simultáneo, ' + txtPases + ' de 15 segundos por tótem durante ' + txtDias + '.';
+      document.getElementById('res-detalle').textContent = 'Incluye: ' + txtPuntos + ' en simultáneo. Totalizando ' + pasesTotalesDia + ' pases de 15 seg. por día durante ' + txtDias + '.';
     }
 
     function enviarWhatsApp() {
-      var totems = get('totems');
       var pases = get('pases');
       var dias = get('dias');
       var elTotal = document.getElementById('res-total');
       var totalText = elTotal ? elTotal.textContent : '$ 0';
       
-      // Mensaje de WhatsApp actualizado
-      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + totems + ' tótems, ' + pases + ' pases de 15 segundos diarios por ' + dias + ' días (Presupuesto estimado: ' + totalText + ').';
-      var telefono = "5493876022170"; // Acuérdate de cambiarlo por tu celu real sin el 0 ni el 15.
+      var checkboxes = document.querySelectorAll('.ubi-chip input:checked');
+      var nombresUbicaciones = [];
+      checkboxes.forEach(function(cb) {
+        nombresUbicaciones.push("- " + cb.getAttribute('data-name'));
+      });
       
+      var listaTexto = nombresUbicaciones.join('\n');
+      
+      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + pases + ' pases diarios (base tótem) por ' + dias + ' días.\n\n*Ubicaciones seleccionadas:*\n' + listaTexto + '\n\n*(Presupuesto estimado: ' + totalText + ')*';
+      
+      var telefono = "5493876022170"; // Acuérdate de cambiarlo por tu celu real sin el 0 ni el 15.
       window.open('https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
     }
 
-    // Espera a que cargue toda la web antes de calcular
     window.onload = function() {
       calcular();
     };
