@@ -169,16 +169,16 @@
     </div>
 
     <div class="campo">
-      <label>Cantidad de pantallas (Disponibles: 14)</label>
+      <label>Cantidad de tótems (Disponibles: 8)</label>
       <div class="campo-row">
-        <button class="btn-step" type="button" onclick="cambiar('pantallas', -1)">-</button>
-        <input class="num-input" type="number" id="val-pantallas" value="7" min="1" max="14" oninput="calcular()" onblur="validar('pantallas')">
-        <button class="btn-step" type="button" onclick="cambiar('pantallas', 1)">+</button>
+        <button class="btn-step" type="button" onclick="cambiar('totems', -1)">-</button>
+        <input class="num-input" type="number" id="val-totems" value="4" min="1" max="8" oninput="calcular()" onblur="validar('totems')">
+        <button class="btn-step" type="button" onclick="cambiar('totems', 1)">+</button>
       </div>
     </div>
 
     <div class="campo">
-      <label>Pases por día por pantalla</label>
+      <label>Pases por día por tótem</label>
       <div class="campo-row">
         <button class="btn-step" type="button" onclick="cambiar('pases', -50)">-</button>
         <input class="num-input" type="number" id="val-pases" value="200" min="50" step="50" oninput="calcular()" onblur="validar('pases')">
@@ -201,12 +201,12 @@
       <div class="total-label">Inversión estimada</div>
       <div class="total-valor" id="res-total">$ 0</div>
       <div class="total-detalle" id="res-detalle">Cargando estimación...</div>
-      <button class="btn-cta" type="button" onclick="enviarWhatsApp()">Reservar estas pantallas</button>
+      <button class="btn-cta" type="button" onclick="enviarWhatsApp()">Reservar estos tótems</button>
     </div>
   </div>
 
   <script>
-    var PRECIO_BASE = 37;
+    var PRECIO_BASE = 74;
 
     function get(campo) {
       var input = document.getElementById('val-' + campo);
@@ -241,10 +241,10 @@
     }
 
     function calcular() {
-      var pantallas = get('pantallas');
+      var totems = get('totems');
       var pases = get('pases');
       var dias = get('dias');
-      var total = PRECIO_BASE * pantallas * pases * dias;
+      var total = PRECIO_BASE * totems * pases * dias;
       
       var fmt = new Intl.NumberFormat('es-AR', {
         style: 'currency',
@@ -258,21 +258,21 @@
       
       if(elTotal) elTotal.textContent = fmt.format(total);
       
-      var txtPantallas = pantallas === 1 ? '1 pantalla' : pantallas + ' pantallas';
+      var txtTotems = totems === 1 ? '1 tótem' : totems + ' tótems';
       var txtPases = pases === 1 ? '1 pase diario' : pases + ' pases diarios';
       var txtDias = dias === 1 ? '1 día de cobertura' : dias + ' días de cobertura';
       
-      if(elDetalle) elDetalle.textContent = 'Incluye: ' + txtPantallas + ' en simultáneo, ' + txtPases + ' por pantalla durante ' + txtDias + '.';
+      if(elDetalle) elDetalle.textContent = 'Incluye: ' + txtTotems + ' en simultáneo, ' + txtPases + ' por tótem durante ' + txtDias + '.';
     }
 
     function enviarWhatsApp() {
-      var pantallas = get('pantallas');
+      var totems = get('totems');
       var pases = get('pases');
       var dias = get('dias');
       var elTotal = document.getElementById('res-total');
       var totalText = elTotal ? elTotal.textContent : '$ 0';
       
-      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + pantallas + ' pantallas, ' + pases + ' pases diarios por ' + dias + ' días (Presupuesto estimado: ' + totalText + ').';
+      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + totems + ' tótems, ' + pases + ' pases diarios por ' + dias + ' días (Presupuesto estimado: ' + totalText + ').';
       var telefono = "5493876022170"; // Acuérdate de cambiarlo por tu celu real sin el 0 ni el 15.
       
       window.open('https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
