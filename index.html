@@ -178,7 +178,7 @@
     </div>
 
     <div class="campo">
-      <label>Pases por día por tótem</label>
+      <label>Pases por día por tótem (15 seg. c/u)</label>
       <div class="campo-row">
         <button class="btn-step" type="button" onclick="cambiar('pases', -50)">-</button>
         <input class="num-input" type="number" id="val-pases" value="200" min="50" step="50" oninput="calcular()" onblur="validar('pases')">
@@ -256,13 +256,15 @@
       var elTotal = document.getElementById('res-total');
       var elDetalle = document.getElementById('res-detalle');
       
-      if(elTotal) elTotal.textContent = fmt.format(total);
+      // Agregado el texto "+ IVA" al final del formato de moneda
+      if(elTotal) elTotal.textContent = fmt.format(total) + ' + IVA';
       
       var txtTotems = totems === 1 ? '1 tótem' : totems + ' tótems';
       var txtPases = pases === 1 ? '1 pase diario' : pases + ' pases diarios';
       var txtDias = dias === 1 ? '1 día de cobertura' : dias + ' días de cobertura';
       
-      if(elDetalle) elDetalle.textContent = 'Incluye: ' + txtTotems + ' en simultáneo, ' + txtPases + ' por tótem durante ' + txtDias + '.';
+      // Detalle actualizado con "de 15 segundos"
+      if(elDetalle) elDetalle.textContent = 'Incluye: ' + txtTotems + ' en simultáneo, ' + txtPases + ' de 15 segundos por tótem durante ' + txtDias + '.';
     }
 
     function enviarWhatsApp() {
@@ -272,7 +274,8 @@
       var elTotal = document.getElementById('res-total');
       var totalText = elTotal ? elTotal.textContent : '$ 0';
       
-      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + totems + ' tótems, ' + pases + ' pases diarios por ' + dias + ' días (Presupuesto estimado: ' + totalText + ').';
+      // Mensaje de WhatsApp actualizado
+      var mensaje = 'Hola! Estuve usando el simulador web y quiero consultar disponibilidad para una campaña de ' + totems + ' tótems, ' + pases + ' pases de 15 segundos diarios por ' + dias + ' días (Presupuesto estimado: ' + totalText + ').';
       var telefono = "5493876022170"; // Acuérdate de cambiarlo por tu celu real sin el 0 ni el 15.
       
       window.open('https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
